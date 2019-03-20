@@ -1,0 +1,8 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" loaded="pageLoaded" class="page" xmlns:VideoPlayer="nativescript-videoplayer">
+  <StackLayout class="p-20">
+    <Button text="Convert to mp4" class="t-20 text-center c-black" tap="convertToMp4"/>
+    <VideoPlayer:Video id="nativeVideoPlayer"
+                       controls="true" loop="true" autoplay="true" height="280"
+                       src="{{ src }}" />
+  </StackLayout>
+</Page>
