@@ -19,23 +19,23 @@
 tns plugin add nativescript-ffmpeg-plugin
 ```
 
-## Usage 
+## Usage
 
-1. Execute commands. 
+1. Execute commands.
 
-    - Use execute() method with a single command line and an argument delimiter  
+    - Use execute() method with a single command line and an argument delimiter
 
     ```
     import { LogLevel, FFmpeg } from 'nativescript-ffmpeg-plugin';
-    
+
     FFmpeg.execute('-i file1.mp4 -c:v mpeg4 file2.mp4', ' ').then(result => console.log("FFmpeg process exited with result " + result));
     ```
 
-    - Use executeWithArguments() method with an array of arguments  
+    - Use executeWithArguments() method with an array of arguments
 
     ```
-    import { LogLevel, FFmpeg } from 'react-native-ffmpeg';
-    
+    import { LogLevel, FFmpeg } from 'nativescript-ffmpeg-plugin';
+
     FFmpeg.executeWithArguments(["-i", "file1.mp4", "-c:v", "mpeg4", "file2.mp4"]).then(result => console.log("FFmpeg process exited with result " + result));
     ```
 
@@ -161,7 +161,7 @@ tns plugin add nativescript-ffmpeg-plugin
     FFmpeg.getExternalLibraries().then(externalLibraries => {
         console.log(externalLibraries);
     });
-    ``` 
+    ```
 ## License
 
 Apache License Version 2.0, January 2004
