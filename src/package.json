@@ -1,6 +1,6 @@
 {
     "name": "nativescript-ffmpeg-plugin",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "FFmpeg for NativeScript",
     "main": "ffmpeg",
     "typings": "index.d.ts",
