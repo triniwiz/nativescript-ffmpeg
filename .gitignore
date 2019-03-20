@@ -26,3 +26,4 @@ demo/report/stats.json
 !demo-vue/app/app.js
 !src/lib/*.js
 !src/*hooks.js
+demo/app/assets/*

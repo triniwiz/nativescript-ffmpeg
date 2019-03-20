@@ -18,11 +18,11 @@ FFmpeg.enableStatisticsCallback(function(stats) {
 });
 
 export function convertToMp4() {
-    const file = fs.path.join(fs.knownFolders.currentApp().path, 'assets/image_cache_sime.mov');
+    const file = fs.path.join(fs.knownFolders.currentApp().path, 'assets/BigBuckBunny.mp4');
     const newPath = fs.path.join(fs.knownFolders.documents().path, 'assets');
     fs.Folder.fromPath(newPath); // creates new directory;
-    const newFile = fs.path.join(fs.knownFolders.documents().path, 'assets/image_cache_sime.mp4');
-    if (fs.File.exists('')) {
+    const newFile = fs.path.join(fs.knownFolders.documents().path, 'assets/BigBuckBunny.mp4');
+    if (fs.File.exists(newFile)) {
         console.log('oldFile size', fs.File.fromPath(file).size, 'newFile size', fs.File.fromPath(newFile).size);
         vm.set('src', newFile);
         getFileInfo();
@@ -41,12 +41,12 @@ export function convertToMp4() {
 }
 
 export function getFileInfo() {
-    const newFile = fs.path.join(fs.knownFolders.documents().path, 'assets/image_cache_sime.mp4');
+    const newFile = fs.path.join(fs.knownFolders.documents().path, 'assets/BigBuckBunny.mp4');
     FFmpeg.getMediaInformation(newFile)
         .then(info => {
-            console.dir(info);
+            console.log(info);
         })
         .catch(error => {
-            console.error(error);
+            console.error(error.message);
         });
 }

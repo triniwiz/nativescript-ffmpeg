@@ -25,7 +25,7 @@ context.onmessage = msg => {
             cancel(msg.data.id);
             break;
         case FFmpegActions.GETMEDIAINFORMATION:
-            getMediaInformation(msg.data.file, msg.data.id);
+            getMediaInformation(msg.data.file, msg.data.id, msg.data.timeOut);
             break;
         case FFmpegActions.GETEXTERNALLIBRARIES:
             getExternalLibraries(msg.data.id);
@@ -43,7 +43,7 @@ context.onmessage = msg => {
             initLogListener();
             break;
         case FFmpegActions.ENABLESTATISTICS:
-           // initStatisticsListener();
+            initStatisticsListener();
             break;
         default:
             break;
@@ -52,7 +52,7 @@ context.onmessage = msg => {
 
 const initLogListener = () => {
     if (isAndroid) {
-        com.arthenica.mobileffmpeg.Config.enableLogCallback(new com.arthenica.mobileffmpeg.LogCallback({
+      /*  com.arthenica.mobileffmpeg.Config.enableLogCallback(new com.arthenica.mobileffmpeg.LogCallback({
             apply(logMessage: com.arthenica.mobileffmpeg.LogMessage): void {
                 context.postMessage({
                     type: 'success',
@@ -60,7 +60,7 @@ const initLogListener = () => {
                     result: {level: logMessage.getLevel(), text: logMessage.getText()}
                 });
             }
-        }));
+        }));*/
     } else {
         const logDelegateImpl = (NSObject as any).extend({
             logCallback: function (level: number, message: string) {
@@ -79,7 +79,7 @@ const initLogListener = () => {
 
 const initStatisticsListener = () => {
     if (isAndroid) {
-        com.arthenica.mobileffmpeg.Config.enableStatisticsCallback(new com.arthenica.mobileffmpeg.StatisticsCallback({
+       /* com.arthenica.mobileffmpeg.Config.enableStatisticsCallback(new com.arthenica.mobileffmpeg.StatisticsCallback({
             apply(statistics: com.arthenica.mobileffmpeg.Statistics): void {
                 context.postMessage({
                     type: 'success',
@@ -96,6 +96,7 @@ const initStatisticsListener = () => {
                 });
             }
         }));
+        */
     } else {
         const statsDelegateImpl = (NSObject as any).extend({
             statisticsCallback: function (statistics: Statistics) {
@@ -205,11 +206,11 @@ const cancel = (id: string) => {
     }
 };
 
-const getMediaInformation = (file: string, id: string) => {
+const getMediaInformation = (file: string, id: string, timeOut: number) => {
     try {
         let mediaInfo: FFmpegMediaInformation;
         if (isAndroid) {
-            const info = com.arthenica.mobileffmpeg.FFmpeg.getMediaInformation(file);
+            const info = com.arthenica.mobileffmpeg.FFmpeg.getMediaInformation(file, timeOut as any);
             const streams = [];
             const nativeStreams = info.getStreams();
             if (nativeStreams) {
@@ -250,7 +251,7 @@ const getMediaInformation = (file: string, id: string) => {
             };
             context.postMessage({action: FFmpegActions.GETMEDIAINFORMATION, type: 'success', id, result: mediaInfo});
         } else {
-            const info = MobileFFmpeg.getMediaInformation(file);
+            const info = MobileFFmpeg.getMediaInformationTimeout(file, timeOut);
             const streams = [];
             const nativeStreams = info.getStreams();
             if (nativeStreams) {

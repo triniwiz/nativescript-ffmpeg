@@ -59,7 +59,6 @@ export interface FFmpegMediaInformation {
 }
 
 export enum LogLevel {
-
     /**
      * Print no output.
      */
@@ -108,9 +107,7 @@ export enum LogLevel {
      * Extremely verbose debugging, useful for libav* development.
      */
     AV_LOG_TRACE = 56
-
 }
-
 
 export class FFmpeg {
     private static _worker: Worker;
@@ -148,7 +145,7 @@ export class FFmpeg {
                             case FFmpegActions.GETEXTERNALLIBRARIES:
                             case FFmpegActions.GETLASTCOMMANDOUTPUT:
                             case FFmpegActions.GETLASTRECEIVEDSTATISTICS:
-                            case  FFmpegActions.GETLASTRETURNCODE:
+                            case FFmpegActions.GETLASTRETURNCODE:
                                 callback.resolve(result);
                                 break;
                             default:
@@ -177,53 +174,159 @@ export class FFmpeg {
         return this._worker;
     }
 
-    private static callbackMap: Map<string, { resolve: any, reject: any }> = new Map();
+    private static callbackMap: Map<string,
+        { resolve: any; reject: any }> = new Map();
 
     public static execute(cmd: string, delimiter: string = ' '): Promise<number> {
         return new Promise((resolve, reject) => {
-            const id = this.getUUID();
-            this.callbackMap.set(id, {resolve, reject});
-            this.worker.postMessage({action: FFmpegActions.EXECUTE, cmd, delimiter, id});
+            if (isAndroid) {
+                com.github.triniwiz.fancyffmpeg.FancyFFmpeg.execute(
+                    cmd,
+                    delimiter,
+                    new com.github.triniwiz.fancyffmpeg.Listener({
+                        onError(error) {
+                            reject(error);
+                        },
+                        onSuccess(result) {
+                            resolve(result);
+                        }
+                    })
+                );
+            } else {
+                const id = this.getUUID();
+                this.callbackMap.set(id, {resolve, reject});
+                this.worker.postMessage({
+                    action: FFmpegActions.EXECUTE,
+                    cmd,
+                    delimiter,
+                    id
+                });
+            }
         });
     }
 
     public static executeWithArguments(args: string[]): Promise<number> {
         return new Promise((resolve, reject) => {
-            const id = this.getUUID();
-            this.callbackMap.set(id, {resolve, reject});
-            this.worker.postMessage({action: FFmpegActions.EXECUTEWITHARGUMENTS, args, id});
+            if (isAndroid) {
+                com.github.triniwiz.fancyffmpeg.FancyFFmpeg.executeWithArguments(
+                    args,
+                    new com.github.triniwiz.fancyffmpeg.Listener({
+                        onError(error) {
+                            reject(error);
+                        },
+                        onSuccess(result) {
+                            resolve(result);
+                        }
+                    })
+                );
+            } else {
+                const id = this.getUUID();
+                this.callbackMap.set(id, {resolve, reject});
+                this.worker.postMessage({
+                    action: FFmpegActions.EXECUTEWITHARGUMENTS,
+                    args,
+                    id
+                });
+            }
         });
     }
 
     public static getFFmpegVersion(): Promise<string> {
         return new Promise((resolve, reject) => {
-            const id = this.getUUID();
-            this.callbackMap.set(id, {resolve, reject});
-            this.worker.postMessage({action: FFmpegActions.GETFFMPEGVERSION, id});
+            if (isAndroid) {
+                com.github.triniwiz.fancyffmpeg.FancyFFmpeg.getFFmpegVersion(
+                    new com.github.triniwiz.fancyffmpeg.Listener({
+                        onError(error) {
+                            reject(error);
+                        },
+                        onSuccess(result) {
+                            resolve(result);
+                        }
+                    })
+                );
+            } else {
+                const id = this.getUUID();
+                this.callbackMap.set(id, {resolve, reject});
+                this.worker.postMessage({action: FFmpegActions.GETFFMPEGVERSION, id});
+            }
         });
     }
 
     public static getPlatform(): Promise<String> {
         return new Promise((resolve, reject) => {
-            const id = this.getUUID();
-            this.callbackMap.set(id, {resolve, reject});
-            this.worker.postMessage({action: FFmpegActions.GETPLATFORM, id});
+            if (isAndroid) {
+                com.github.triniwiz.fancyffmpeg.FancyFFmpeg.getPlatform(
+                    new com.github.triniwiz.fancyffmpeg.Listener({
+                        onError(error) {
+                            reject(error);
+                        },
+                        onSuccess(result) {
+                            resolve(result);
+                        }
+                    })
+                );
+            } else {
+                const id = this.getUUID();
+                this.callbackMap.set(id, {resolve, reject});
+                this.worker.postMessage({action: FFmpegActions.GETPLATFORM, id});
+            }
         });
     }
 
     public static cancel(): Promise<any> {
         return new Promise((resolve, reject) => {
-            const id = this.getUUID();
-            this.callbackMap.set(id, {resolve, reject});
-            this.worker.postMessage({action: FFmpegActions.CANCEL, id});
+            if (isAndroid) {
+                com.github.triniwiz.fancyffmpeg.FancyFFmpeg.cancel(
+                    new com.github.triniwiz.fancyffmpeg.Listener({
+                        onError(error) {
+                            reject(error);
+                        },
+                        onSuccess(result) {
+                            resolve(result);
+                        }
+                    })
+                );
+            } else {
+                const id = this.getUUID();
+                this.callbackMap.set(id, {resolve, reject});
+                this.worker.postMessage({action: FFmpegActions.CANCEL, id});
+            }
         });
     }
 
-    public static getMediaInformation(file: string): Promise<any> {
+    public static getMediaInformation(
+        file: string,
+        timeOut = 10000
+    ): Promise<any> {
         return new Promise((resolve, reject) => {
-            const id = this.getUUID();
-            this.callbackMap.set(id, {resolve, reject});
-            this.worker.postMessage({action: FFmpegActions.GETMEDIAINFORMATION, file, id});
+            if (isAndroid) {
+                com.github.triniwiz.fancyffmpeg.FancyFFmpeg.getMediaInformation(
+                    file,
+                    java.lang.Long.valueOf(timeOut),
+                    new com.github.triniwiz.fancyffmpeg.Listener({
+                        onError(error) {
+                            reject(error);
+                        },
+                        onSuccess(result) {
+                            try {
+                                resolve(JSON.parse(result));
+                            } catch (e) {
+                                console.error(e);
+                                resolve(result);
+                            }
+                        }
+                    })
+                );
+            } else {
+                const id = this.getUUID();
+                this.callbackMap.set(id, {resolve, reject});
+                this.worker.postMessage({
+                    action: FFmpegActions.GETMEDIAINFORMATION,
+                    file,
+                    id,
+                    timeOut
+                });
+            }
         });
     }
 
@@ -249,12 +352,13 @@ export class FFmpeg {
         } else {
             return MobileFFmpegConfig.getLogLevel();
         }
-
     }
 
     public static setLogLevel(level: LogLevel) {
         if (isAndroid) {
-            com.arthenica.mobileffmpeg.Config.setLogLevel(com.arthenica.mobileffmpeg.Level.from(level.valueOf()));
+            com.arthenica.mobileffmpeg.Config.setLogLevel(
+                com.arthenica.mobileffmpeg.Level.from(level.valueOf())
+            );
         } else {
             MobileFFmpegConfig.setLogLevel(level.valueOf());
         }
@@ -277,23 +381,61 @@ export class FFmpeg {
     }
 
     public static enableLogCallback(callback?: Function) {
-        this.worker.postMessage({action: FFmpegActions.ENABLELOG});
-        if (!callback) {
-            this._logCallback = null;
-            return;
-        }
+        if (isAndroid) {
+            com.github.triniwiz.fancyffmpeg.FancyFFmpeg.enableLogCallback(
+                new com.github.triniwiz.fancyffmpeg.LogListener({
+                    onResult(result) {
+                        try {
+                            const data = JSON.parse(result);
+                            if (callback) {
+                                callback(data);
+                            } else {
+                                console.log(data);
+                            }
+                        } catch (e) {
+                            if (callback) {
+                                callback(result);
+                            } else {
+                                console.error(e);
+                            }
+                        }
+                    }
+                })
+            );
+        } else {
+            this.worker.postMessage({action: FFmpegActions.ENABLELOG});
+            if (!callback) {
+                this._logCallback = null;
+                return;
+            }
 
-        this._logCallback = callback;
+            this._logCallback = callback;
+        }
     }
 
     public static enableStatisticsCallback(callback?: Function) {
-        this.worker.postMessage({action: FFmpegActions.ENABLESTATISTICS});
-        if (!callback) {
-            this._statisticsCallback = null;
-            return;
+        if (isAndroid) {
+            com.github.triniwiz.fancyffmpeg.FancyFFmpeg.enableStatisticsCallback(
+                new com.github.triniwiz.fancyffmpeg.LogListener({
+                    onResult(result) {
+                        if (callback) {
+                            try {
+                                callback(JSON.parse(result));
+                            } catch (e) {
+                                callback(result);
+                            }
+                        }
+                    }
+                })
+            );
+        } else {
+            this.worker.postMessage({action: FFmpegActions.ENABLESTATISTICS});
+            if (!callback) {
+                this._statisticsCallback = null;
+                return;
+            }
+            this._statisticsCallback = callback;
         }
-        this._statisticsCallback = callback;
-
     }
 
     public static resetStatistics() {
@@ -306,34 +448,101 @@ export class FFmpeg {
 
     public static getExternalLibraries(): Promise<string[]> {
         return new Promise((resolve, reject) => {
-            const id = this.getUUID();
-            this.callbackMap.set(id, {resolve, reject});
-            this.worker.postMessage({action: FFmpegActions.GETEXTERNALLIBRARIES, id});
+            if (isAndroid) {
+                com.github.triniwiz.fancyffmpeg.FancyFFmpeg.getExternalLibraries(
+                    new com.github.triniwiz.fancyffmpeg.Listener({
+                        onError(error) {
+                            reject(error);
+                        },
+                        onSuccess(result) {
+                            resolve(result);
+                        }
+                    })
+                );
+            } else {
+                const id = this.getUUID();
+                this.callbackMap.set(id, {resolve, reject});
+                this.worker.postMessage({
+                    action: FFmpegActions.GETEXTERNALLIBRARIES,
+                    id
+                });
+            }
         });
     }
 
     public static getLastReceivedStatistics(): Promise<FFmpegStatistics> {
         return new Promise((resolve, reject) => {
-            const id = this.getUUID();
-            this.callbackMap.set(id, {resolve, reject});
-            this.worker.postMessage({action: FFmpegActions.GETLASTRECEIVEDSTATISTICS, id});
+            if (isAndroid) {
+                com.github.triniwiz.fancyffmpeg.FancyFFmpeg.getLastReceivedStatistics(
+                    new com.github.triniwiz.fancyffmpeg.Listener({
+                        onError(error) {
+                            reject(error);
+                        },
+                        onSuccess(result) {
+                            try {
+                                resolve(JSON.parse(result));
+                            } catch (e) {
+                                resolve(result);
+                            }
+                        }
+                    })
+                );
+            } else {
+                const id = this.getUUID();
+                this.callbackMap.set(id, {resolve, reject});
+                this.worker.postMessage({
+                    action: FFmpegActions.GETLASTRECEIVEDSTATISTICS,
+                    id
+                });
+            }
         });
-
     }
 
     public static getLastReturnCode(): Promise<number> {
         return new Promise((resolve, reject) => {
-            const id = this.getUUID();
-            this.callbackMap.set(id, {resolve, reject});
-            this.worker.postMessage({action: FFmpegActions.GETLASTRETURNCODE, id});
+            if (isAndroid) {
+                com.github.triniwiz.fancyffmpeg.FancyFFmpeg.getLastReturnCode(
+                    new com.github.triniwiz.fancyffmpeg.Listener({
+                        onError(error) {
+                            reject(error);
+                        },
+                        onSuccess(result) {
+                            resolve(result);
+                        }
+                    })
+                );
+            } else {
+                const id = this.getUUID();
+                this.callbackMap.set(id, {resolve, reject});
+                this.worker.postMessage({
+                    action: FFmpegActions.GETLASTRETURNCODE,
+                    id
+                });
+            }
         });
     }
 
     public static getLastCommandOutput(): Promise<string> {
         return new Promise((resolve, reject) => {
-            const id = this.getUUID();
-            this.callbackMap.set(id, {resolve, reject});
-            this.worker.postMessage({action: FFmpegActions.GETLASTCOMMANDOUTPUT, id});
+            if (isAndroid) {
+                com.github.triniwiz.fancyffmpeg.FancyFFmpeg.getLastCommandOutput(
+                    new com.github.triniwiz.fancyffmpeg.Listener({
+                        onError(error) {
+                            reject(error);
+                        },
+                        onSuccess(result) {
+                            resolve(result);
+                        }
+                    })
+                );
+            } else {
+                const id = this.getUUID();
+                this.callbackMap.set(id, {resolve, reject});
+                this.worker.postMessage({
+                    action: FFmpegActions.GETLASTCOMMANDOUTPUT,
+                    id
+                });
+            }
         });
     }
 
