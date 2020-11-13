@@ -1,4 +1,4 @@
-import { isAndroid } from 'tns-core-modules/platform';
+import { isAndroid } from '@nativescript/core/platform';
 
 export enum FFmpegActions {
     EXECUTE = 'execute',

@@ -1,5 +1,5 @@
-import 'tns-core-modules/globals';
-import { isAndroid } from 'tns-core-modules/platform';
+import '@nativescript/core/globals';
+import { isAndroid } from '@nativescript/core/platform';
 import { FFmpegActions, FFmpegMediaInformation, FFmpegStatistics } from './ffmpeg';
 
 let main_queue;
