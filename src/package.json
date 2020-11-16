@@ -86,7 +86,7 @@
     "plugin.tscwatch": "npm run tsc -- -w",
     "postclone": "npm i && node scripts/postclone.js && cd ../demo && npm i && npx rimraf -- package-lock.json && cd ../src",
     "postinstall": "node postinstall-hooks.js",
-    "prepack": "npm run build.native",
+    "prepack": "npm run build",
     "preuninstall": "node preuninstall-hooks.js",
     "test.android": "npm run tsc && npm run tslint && cd ../demo && ns build android && ns test android --justlaunch",
     "test.ios": "npm run tsc && npm run tslint && cd ../demo && ns build ios && ns test ios --justlaunch",
