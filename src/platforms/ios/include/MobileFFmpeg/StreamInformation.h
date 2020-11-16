@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2020 Taner Sener
+ * Copyright (c) 2018 Taner Sener
  *
  * This file is part of MobileFFmpeg.
  *
@@ -24,160 +24,272 @@
  */
 @interface StreamInformation : NSObject
 
-- (instancetype)init:(NSDictionary*)streamDictionary;
+- (instancetype)init;
 
 /**
  * Returns stream index.
  *
- * @return stream index, starting from zero
+ * \return stream index, starting from zero
  */
 - (NSNumber*)getIndex;
 
 /**
+ * Sets stream index.
+ *
+ * \param stream index, starting from zero
+ */
+- (void)setIndex:(NSNumber*) index;
+
+/**
  * Returns stream type.
  *
- * @return stream type; audio or video
+ * \return stream type; audio or video
  */
 - (NSString*)getType;
 
 /**
+ * Sets stream type.
+ *
+ * \param stream type; audio or video
+ */
+- (void)setType:(NSString*) type;
+
+/**
  * Returns stream codec.
  *
- * @return stream codec
+ * \return stream codec
  */
 - (NSString*)getCodec;
 
 /**
+ * Sets stream codec.
+ *
+ * \param stream codec
+ */
+- (void)setCodec:(NSString*) codec;
+
+/**
  * Returns full stream codec.
  *
- * @return stream codec with additional profile and mode information
+ * \return stream codec with additional profile and mode information
  */
 - (NSString*)getFullCodec;
 
 /**
+ * Sets full stream codec.
+ *
+ * \param stream codec with additional profile and mode information
+ */
+- (void)setFullCodec:(NSString*) fullCodec;
+
+/**
  * Returns stream format.
  *
- * @return stream format
+ * \return stream format
  */
 - (NSString*)getFormat;
 
 /**
+ * Sets stream format.
+ *
+ * \param stream format
+ */
+- (void)setFormat:(NSString*) format;
+
+/**
+ * Returns full stream format.
+ *
+ * \return stream format with
+ */
+- (NSString*)getFullFormat;
+
+/**
+ * Sets full stream format.
+ *
+ * \param stream format with
+ */
+- (void)setFullFormat:(NSString*) fullFormat;
+
+/**
  * Returns width.
  *
- * @return width in pixels
+ * \return width in pixels
  */
 - (NSNumber*)getWidth;
 
 /**
+ * Sets width.
+ *
+ * \param width in pixels
+ */
+- (void)setWidth:(NSNumber*) width;
+
+/**
  * Returns height.
  *
- * @return height in pixels
+ * \return height in pixels
  */
 - (NSNumber*)getHeight;
 
 /**
+ * Sets height.
+ *
+ * \param height in pixels
+ */
+- (void)setHeight:(NSNumber*) height;
+
+/**
  * Returns bitrate.
  *
- * @return bitrate in kb/s
+ * \return bitrate in kb/s
  */
-- (NSString*)getBitrate;
+- (NSNumber*)getBitrate;
+
+/**
+ * Sets bitrate.
+ *
+ * \param bitrate in kb/s
+ */
+- (void)setBitrate:(NSNumber*) bitrate;
 
 /**
  * Returns sample rate.
  *
- * @return sample rate in hz
+ * \return sample rate in hz
  */
-- (NSString*)getSampleRate;
+- (NSNumber*)getSampleRate;
+
+/**
+ * Sets sample rate.
+ *
+ * \param sample rate in hz
+ */
+- (void)setSampleRate:(NSNumber*) sampleRate;
 
 /**
  * Returns sample format.
  *
- * @return sample format
+ * \return sample format
  */
 - (NSString*)getSampleFormat;
 
 /**
+ * Sets sample format.
+ *
+ * \param sample format
+ */
+- (void)setSampleFormat:(NSString*) sampleFormat;
+
+/**
  * Returns channel layout.
  *
- * @return channel layout
+ * \return channel layout
  */
 - (NSString*)getChannelLayout;
 
 /**
+ * Sets channel layout.
+ *
+ * \param channel layout
+ */
+- (void)setChannelLayout:(NSString*) channelLayout;
+
+/**
  * Returns sample aspect ratio.
  *
- * @return sample aspect ratio
+ * \return sample aspect ratio
  */
 - (NSString*)getSampleAspectRatio;
 
 /**
+ * Sets sample aspect ratio.
+ *
+ * \param sample aspect ratio
+ */
+- (void)setSampleAspectRatio:(NSString*) sampleAspectRatio;
+
+/**
  * Returns display aspect ratio.
  *
- * @return display aspect ratio
+ * \return display aspect ratio
  */
 - (NSString*)getDisplayAspectRatio;
 
 /**
+ * Sets display aspect ratio.
+ *
+ * \param display aspect ratio
+ */
+- (void)setDisplayAspectRatio:(NSString*) displayAspectRatio;
+
+/**
  * Returns average frame rate.
  *
- * @return average frame rate in fps
+ * \return average frame rate in fps
  */
 - (NSString*)getAverageFrameRate;
 
 /**
+ * Sets average frame rate.
+ *
+ * \param average frame rate in fps
+ */
+- (void)setAverageFrameRate:(NSString*) averageFrameRate;
+
+/**
  * Returns real frame rate.
  *
- * @return real frame rate in tbr
+ * \return real frame rate in tbr
  */
 - (NSString*)getRealFrameRate;
 
 /**
+ * Sets real frame rate.
+ *
+ * \param real frame rate in tbr
+ */
+- (void)setRealFrameRate:(NSString*) realFrameRate;
+
+/**
  * Returns time base.
  *
- * @return time base in tbn
+ * \return time base in tbn
  */
 - (NSString*)getTimeBase;
 
 /**
+ * Sets time base.
+ *
+ * \param time base in tbn
+ */
+- (void)setTimeBase:(NSString*) timeBase;
+
+/**
  * Returns codec time base.
  *
- * @return codec time base in tbc
+ * \return codec time base in tbc
  */
 - (NSString*)getCodecTimeBase;
 
 /**
- * Returns all tags.
+ * Sets codec time base.
  *
- * @return tags dictionary
+ * \param codec time base in tbc
  */
-- (NSDictionary*)getTags;
+- (void)setCodecTimeBase:(NSString*) codecTimeBase;
 
 /**
- * Returns the stream property associated with the key.
+ * Adds metadata.
  *
- * @return stream property as string or nil if the key is not found
+ * \param metadata key and value
  */
-- (NSString*)getStringProperty:(NSString*)key;
+- (void)addMetadata:(NSString*)key :(NSString*)value;
 
 /**
- * Returns the stream property associated with the key.
+ * Returns all metadata entries.
  *
- * @return stream property as number or nil if the key is not found
+ * \return metadata dictionary
  */
-- (NSNumber*)getNumberProperty:(NSString*)key;
-
-/**
- * Returns the stream properties associated with the key.
- *
- * @return stream properties in a dictionary or nil if the key is not found
-*/
-- (NSDictionary*)getProperties:(NSString*)key;
-
-/**
- * Returns all stream properties defined.
- *
- * @return all stream properties in a dictionary or nil if no properties are defined
-*/
-- (NSDictionary*)getAllProperties;
+- (NSDictionary*)getMetadataEntries;
 
 @end

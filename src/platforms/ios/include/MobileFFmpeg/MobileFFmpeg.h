@@ -20,10 +20,16 @@
 #include <string.h>
 #include <stdlib.h>
 #include <Foundation/Foundation.h>
-#include "ExecuteDelegate.h"
+#include "libavutil/ffversion.h"
+
+#include "MediaInformationParser.h"
 
 /** Global library version */
 extern NSString *const MOBILE_FFMPEG_VERSION;
+
+/** Common return code values */
+extern int const RETURN_CODE_SUCCESS;
+extern int const RETURN_CODE_CANCEL;
 
 /**
  * Main class for FFmpeg operations.
@@ -31,69 +37,45 @@ extern NSString *const MOBILE_FFMPEG_VERSION;
 @interface MobileFFmpeg : NSObject
 
 /**
+ * Returns FFmpeg version bundled within the library.
+ *
+ * \return FFmpeg version
+ */
++ (NSString*)getFFmpegVersion;
+
+/**
+ * Returns MobileFFmpeg library version.
+ *
+ * \return MobileFFmpeg version
+ */
++ (NSString*)getVersion;
+
+/**
  * Synchronously executes FFmpeg with arguments provided.
  *
- * @param arguments FFmpeg command options/arguments as string array
- * @return zero on successful execution, 255 on user cancel and non-zero on error
+ * \param FFmpeg command options/arguments as string array
+ * \return zero on successful execution, 255 on user cancel and non-zero on error
  */
-+ (int)executeWithArguments:(NSArray*)arguments;
++ (int)executeWithArguments: (NSArray*)arguments;
 
 /**
- * Asynchronously executes FFmpeg with arguments provided. Space character is used to split command into arguments.
+ * Synchronously executes FFmpeg command provided. Space character is used to split command
+ * into arguments.
  *
- * @param arguments FFmpeg command options/arguments as string array
- * @param delegate delegate that will be notified when execution is completed
- * @return returns a unique id that represents this execution
+ * \param FFmpeg command
+ * \return zero on successful execution, 255 on user cancel and non-zero on error
  */
-+ (int)executeWithArgumentsAsync:(NSArray*)arguments withCallback:(id<ExecuteDelegate>)delegate;
++ (int)execute: (NSString*)command;
 
 /**
- * Asynchronously executes FFmpeg with arguments provided. Space character is used to split command into arguments.
+ * Synchronously executes FFmpeg command provided. Delimiter parameter is used to split
+ * command into arguments.
  *
- * @param arguments FFmpeg command options/arguments as string array
- * @param delegate delegate that will be notified when execution is completed
- * @param queue dispatch queue that will be used to run this asynchronous operation
- * @return returns a unique id that represents this execution
+ * \param FFmpeg command
+ * \param arguments delimiter
+ * \return zero on successful execution, 255 on user cancel and non-zero on error
  */
-+ (int)executeWithArgumentsAsync:(NSArray*)arguments withCallback:(id<ExecuteDelegate>)delegate andDispatchQueue:(dispatch_queue_t)queue;
-
-/**
- * Synchronously executes FFmpeg command provided. Space character is used to split command into arguments.
- *
- * @param command FFmpeg command
- * @return zero on successful execution, 255 on user cancel and non-zero on error
- */
-+ (int)execute:(NSString*)command;
-
-/**
- * Asynchronously executes FFmpeg command provided. Space character is used to split command into arguments.
- *
- * @param command FFmpeg command
- * @param delegate delegate that will be notified when execution is completed
- * @return returns a unique id that represents this execution
- */
-+ (int)executeAsync:(NSString*)command withCallback:(id<ExecuteDelegate>)delegate;
-
-/**
- * Asynchronously executes FFmpeg command provided. Space character is used to split command into arguments.
- *
- * @param command FFmpeg command
- * @param delegate delegate that will be notified when execution is completed
- * @param queue dispatch queue that will be used to run this asynchronous operation
- * @return returns a unique id that represents this execution
- */
-+ (int)executeAsync:(NSString*)command withCallback:(id<ExecuteDelegate>)delegate andDispatchQueue:(dispatch_queue_t)queue;
-
-/**
- * Synchronously executes FFmpeg command provided. Delimiter parameter is used to split command into arguments.
- *
- * @param command FFmpeg command
- * @param delimiter arguments delimiter
- * @deprecated argument splitting mechanism used in this method is pretty simple and prone to errors. Consider
- * using a more advanced method like execute or executeWithArguments
- * @return zero on successful execution, 255 on user cancel and non-zero on error
- */
-+ (int)execute:(NSString*)command delimiter:(NSString*)delimiter __attribute__((deprecated));
++ (int)execute: (NSString*)command delimiter:(NSString*)delimiter;
 
 /**
  * Cancels an ongoing operation.
@@ -103,35 +85,35 @@ extern NSString *const MOBILE_FFMPEG_VERSION;
 + (void)cancel;
 
 /**
- * Cancels an ongoing operation.
+ * Returns return code of last executed command.
  *
- * This function does not wait for termination to complete and returns immediately.
- *
- * @param executionId execution id
+ * \return return code of last executed command
  */
-+ (void)cancel:(long)executionId;
++ (int)getLastReturnCode;
 
 /**
- * Parses the given command into arguments.
+ * Returns log output of last executed command. Please note that disabling redirection using
+ * MobileFFmpegConfig.disableRedirection() method also disables this functionality.
  *
- * @param command string command
- * @return array of arguments
+ * \return output of last executed command
  */
-+ (NSArray*)parseArguments:(NSString*)command;
++ (NSString*)getLastCommandOutput;
 
 /**
- * <p>Combines arguments into a string.
+ * Returns media information for given file.
  *
- * @param arguments arguments
- * @return string containing all arguments
+ * \param path or uri of media file
+ * \return media information
  */
-+ (NSString*)argumentsToString:(NSArray*)arguments;
++ (MediaInformation*)getMediaInformation: (NSString*)path;
 
 /**
- * <p>Lists ongoing executions.
+ * Returns media information for given file.
  *
- * @return list of ongoing executions
+ * \param path    path or uri of media file
+ * \param timeout complete timeout
+ * \return media information
  */
-+ (NSArray*)listExecutions;
+ + (MediaInformation*)getMediaInformation: (NSString*)path timeout:(long)timeout;
 
 @end
