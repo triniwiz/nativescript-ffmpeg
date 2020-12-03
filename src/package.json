@@ -90,5 +90,5 @@
     "tslint": "cd .. && tslint \"**/*.ts\" --config tslint.json --exclude \"**/node_modules/**\""
   },
   "typings": "index.d.ts",
-  "version": "7.0.6"
+  "version": "7.0.7"
 }
