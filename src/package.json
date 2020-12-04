@@ -37,9 +37,9 @@
   "description": "FFmpeg for NativeScript (Crowers)",
   "devDependencies": {
     "@nativescript/core": "~7.0.13",
+    "@nativescript/hook": "^2.0.0",
     "@nativescript/types": "~7.0.4",
     "@nativescript/webpack": "~3.0.8",
-    "@nativescript/hook": "~1.0.0",
     "prompt": "^1.0.0",
     "rimraf": "^3.0.2",
     "semver": "^7.3.2",
@@ -90,5 +90,5 @@
     "tslint": "cd .. && tslint \"**/*.ts\" --config tslint.json --exclude \"**/node_modules/**\""
   },
   "typings": "index.d.ts",
-  "version": "7.0.7"
+  "version": "7.0.8"
 }
